@@ -1,0 +1,54 @@
+﻿@page "/add-expense"
+@using myproject1.Data
+@using myproject1.Respositories
+@inject ExpenseServices ExpenseServices
+@inject NavigationManager NavigationManager
+
+<h3>AddExpense</h3>
+<div class="row mb-s">
+    <div class="col col-lg-10">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" @onsubmit="CreateExpense">
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="date" @bind="ExpenseDtodata.date" placeholder="Enter Expense date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <input type="text" class="form-control" id="category" @bind="ExpenseDtodata.category" placeholder="Enter Expense category" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="description" @bind="ExpenseDtodata.description" placeholder="Enter Expense description" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount</label>
+                        <input type="number" class="form-control" id="amount" @bind="ExpenseDtodata.amount" placeholder="Enter Expense amount" required>
+                    </div>
+                    <div class="col-md-4 d-grid">
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                    <div class="col-md-4 d-grid">
+                        <a href="/Counter" class="btn btn-primary">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+
+    public Expense ExpenseDtodata { get; set; } = new Expense ();
+    public async Task CreateExpense()
+    {
+        await ExpenseServices.addExpenseAsync(ExpenseDtodata);
+        NavigationManager.NavigateTo("/Counter");
+    }
+
+}

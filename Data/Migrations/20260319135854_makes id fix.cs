@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace myproject1.Migrations.MyDbcontexMigrations
+namespace myproject1.Migrations
 {
     /// <inheritdoc />
-    public partial class thirdcreate : Migration
+    public partial class makesidfix : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

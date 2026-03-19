@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -8,10 +8,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Components\NewFolder\**" />
     <Compile Remove="Data\views\**" />
+    <Compile Remove="NewFolder\**" />
+    <Content Remove="Components\NewFolder\**" />
     <Content Remove="Data\views\**" />
+    <Content Remove="NewFolder\**" />
+    <EmbeddedResource Remove="Components\NewFolder\**" />
     <EmbeddedResource Remove="Data\views\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <None Remove="Components\NewFolder\**" />
     <None Remove="Data\views\**" />
+    <None Remove="NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Components\Pages\Component.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,10 +33,15 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.23" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.23" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.23" />
-    <PackageReference Include="Syncfusion.Blazor.Core" Version="32.2.9" />
-    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="32.2.9" />
-    <PackageReference Include="Syncfusion.Blazor.Layouts" Version="32.2.9" />
-    <PackageReference Include="Syncfusion.Blazor.SplitButtons" Version="32.2.9" />
+    <PackageReference Include="MudBlazor" Version="9.2.0" />
+    <PackageReference Include="Syncfusion.Blazor.Grid" Version="33.1.44" />
+    <PackageReference Include="Syncfusion.Blazor.Layouts" Version="33.1.44" />
+    <PackageReference Include="Syncfusion.Blazor.Themes" Version="33.1.44" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+    <Folder Include="sincfusion\" />
   </ItemGroup>
 
 </Project>

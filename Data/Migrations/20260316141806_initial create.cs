@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace myproject1.Migrations.MyDbcontexMigrations
+namespace myproject1.Migrations
 {
     /// <inheritdoc />
-    public partial class secondcreate : Migration
+    public partial class initialcreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,7 +15,11 @@ namespace myproject1.Migrations.MyDbcontexMigrations
                 name: "Expenses",
                 columns: table => new
                 {
-                    ExpenseId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    ExpenseId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    category = table.Column<string>(type: "nvarchar(20)", nullable: false),
+                    description = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using myproject1.Components;
 using myproject1.Components.Account;
 using myproject1.Data;
+using Syncfusion.Blazor;
+using MudBlazor.Services;
 
 namespace myproject1
 {
@@ -17,6 +19,11 @@ namespace myproject1
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
             builder.Services.AddTransient<ExpenseServices>();
+            builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
+    
+            builder.Services.AddSyncfusionBlazor();
+
 
             builder.Services.AddCascadingAuthenticationState();
             builder.Services.AddScoped<IdentityUserAccessor>();
@@ -38,6 +45,8 @@ namespace myproject1
 
             builder.Services.AddQuickGridEntityFrameworkAdapter();
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+            builder.Services.AddSyncfusionBlazor();
+            builder.Services.AddMudServices();
 
             builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
@@ -45,8 +54,9 @@ namespace myproject1
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
 
+
             builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
-            builder.Services.AddDbContext<MyDbcontex>(options =>
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             var app = builder.Build();

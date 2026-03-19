@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using myproject1.Data;
 
@@ -11,9 +12,11 @@ using myproject1.Data;
 namespace myproject1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260316141806_initial create")]
+    partial class initialcreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -222,15 +225,8 @@ namespace myproject1.Migrations
 
             modelBuilder.Entity("myproject1.Data.Expense", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ExpenseId")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("int");
+                    b.Property<string>("ExpenseId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("amount")
                         .HasColumnType("double(10)");
@@ -246,7 +242,7 @@ namespace myproject1.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ExpenseId");
 
                     b.ToTable("Expenses");
                 });

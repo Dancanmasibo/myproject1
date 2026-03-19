@@ -2,81 +2,130 @@
 @using myproject1.Data
 @using myproject1.Respositories
 @inject ExpenseServices expenseService;
+@inject HttpClient httpClient
+@using myproject1.Components.Pages
 
-<div id="page-expenses" class="page">
-    <div class="page-header">
-        <h2>Expenses</h2>
-        <p>Manage and track your expenditures</p>
-    </div>
+<div id="page-dashboard" class="page active"></div>
+<div class="page-header">
+    <h2 id="dash-greeting">Good morning 👋</h2>
+    <p>Here's your financial overview</p>
 </div>
-@* <div></div> class for responsive view *@
-@* <table class="table table-striped table-responsive-sm"></table>
-<thead class="table-secondary">
-    <tr>
-        <td>ID</td>
-        <td>Type</td>
-        <td>Date</td>
-        <td>Action</td>
-    </tr>
-</thead> *@
-@if (expenseList == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    if(expenseList.Count()> 0)
-    {
-        
-    
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Date</th>
-                <th>Category</th>
-                <th>Description</th>
-                <th>Amount</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (Expense expense in expenseList)
+<iframe>
+    <div class="chart-section">
+        <div class="chart-header">
+            <span class="chart-title">Monthly Expenditure</span>
+            <span style="font-size:12px;color:var(--muted)">Last 6 months</span>
+        </div>
+        <div class="chart-bars" id="chart-bars"></div>
+    </div>
+</iframe>
+<div>
+    <div class="stats-grid" id="stats-grid"></div>
+    <iframe>
+        <div class="table-section">
+            <div class="table-header">
+                <span class="table-title">Recent Expenses</span>
+            </div>
+            @if (expenseList == null)
             {
-                <tr>
-                    <td>@expense.ExpenseId</td>
-                    <td>@expense.date.ToShortDateString</td>
-                    <td>@expense.category</td>
-                    <td>@expense.description</td>
-                    <td>@expense.amount</td>
-                </tr>
+                <p><em>Loading...</em></p>
             }
-        </tbody>
+            else
+            {
+                if (expenseList.Count() > 0)
+                {
+
+
+                    <table class="table table-striped border table-responsive-sm">
+                        <thead class="table-secondary">
+                            <tr>
+                                <th>Id</th>
+                                <th>Date</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th><!..buttons column heading..></!..buttons></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Expense expense in expenseList)
+                            {
+                                <tr>
+                                    <td>@expense.ExpenseId</td>
+                                    <td>@expense.date.ToShortDateString</td>
+                                    <td>@expense.category</td>
+                                    <td>@expense.description</td>
+                                    <td>@expense.amount</td>
+                                    <td>
+                                        <button onclick="" class="btn btn-success btn-sm mb-1">Edit</button>
+                                        <button onclick="" class="btn btn-btn-dangern-sm mb-1">Delete</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>no expenses Available</p>
+                }
+            }
+        </div>
+    </iframe>
+</div>
+<div class="table-section">
+    <div class="table-header">
+        <span class="table-title">Recent Expenses</span>
+        <div>
+            <div class="stats-grid" id="stats-grid"></div>
+            <iframe>
+            </iframe>
+        </div>
+        <table class="data-table">
+            <thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Amount (KES)</th></tr></thead>
+            <tbody id="recent-tbody"></tbody>
         </table>
-    }
-    else
-    {
-        <p>no expenses Available</p>
-    }
-}
+    </div>
+
+
+</div>
+<div class="stat-card blue">
+    <div class="stat-label">TOTAL EXPENDITURE</div>
+    <div class="stat-value blue">KES ${total.toLocaleString()}</div>
+    <div class="stat-change"><span class="up">↑ 12%</span> vs last period</div>
+</div>
+<div class="stat-card purple">
+    <div class="stat-label">THIS MONTH</div>
+    <div class="stat-value purple">KES ${month.toLocaleString()}</div>
+    <div class="stat-change"><span class="down">↓ 5%</span> vs last month</div>
+</div>
+<div class="stat-card green">
+    <div class="stat-label">${currentRole === 'business' ? 'CATEGORIES' : 'TRANSACTIONS'}</div>
+    <div class="stat-value green">${currentRole === 'business' ? currentUser.categories.length : expenses.length}</div>
+</div>
+<div class="stat-card red">
+    <div class="stat-label">LARGEST EXPENSE</div>
+    <div class="stat-value red">KES ${max.toLocaleString()}</div>
+    <div class="stat-value red">KES @Max</div>
+</div>`;
+
+
 
 @code {
-    //list to store variables
-    public Expense expense { get; set; }
+    public int Max = 99100;
+
     public IEnumerable<Expense> expenseList { get; set; }
+
     //method to get all expenses
     public async Task loadExpensesAsync()
-
     {
         expenseList = await expenseService.GetAllExpensesAsync();
     }
+
     //overriding task async
     protected override async Task OnInitializedAsync()
     {
         await loadExpensesAsync();
-        expenseList = await expenseService.GetAllExpensesAsync();
-        expense = new Expense();
-
     }
-
 }
 

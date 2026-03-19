@@ -5,8 +5,8 @@ namespace myproject1.Respositories
 {
     public class ExpenseRepo
     {
-        private readonly MyDbcontex _db;
-        public ExpenseRepo(MyDbcontex db)
+        private readonly ApplicationDbContext _db;
+        public ExpenseRepo(ApplicationDbContext db)
         {
             _db = db;
         }
@@ -28,7 +28,7 @@ namespace myproject1.Respositories
             return listResult;
         }
         //ExpenseId parameter to get specific expense
-        public Expense GetExpenseById(string id)
+        public Expense GetExpenseById(int id)
         {
             Expense expense = _db.Expenses.FirstOrDefault<Expense>(e => e.ExpenseId == id);
             //check if expense is null
@@ -48,8 +48,15 @@ namespace myproject1.Respositories
         //async method to insert data to the database
         public async Task<Expense> addExpenseAsync(Expense expense)
         {
-            _db.Expenses.Add(expense);
-            await _db.SaveChangesAsync();
+            try
+            {
+                _db.Expenses.Add(expense);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+
+            }
             return expense;
         }
         //to update data from the database
@@ -83,7 +90,7 @@ namespace myproject1.Respositories
             return expense;
         }
         //to delete data from the database
-        public Expense deleteExpense(string id)
+        public Expense deleteExpense(int id)
         {
             Expense expense = _db.Expenses.FirstOrDefault<Expense>(e => e.ExpenseId == id);
             if (expense == null)
@@ -98,7 +105,7 @@ namespace myproject1.Respositories
             return expense;
         }
         //async method to delete data from the database
-        public async Task<Expense> deleteExpenseAsync(string id)
+        public async Task<Expense> deleteExpenseAsync(int id)
         {
             Expense expense = await _db.Expenses.FirstOrDefaultAsync<Expense>(e => e.ExpenseId == id);
             if (expense == null)

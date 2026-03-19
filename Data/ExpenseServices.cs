@@ -7,9 +7,12 @@ namespace myproject1.Data
         // Dependency injection of the ExpenseRepo
         private readonly ExpenseRepo _expenseRepo;
         //reference to the database context
-        private readonly MyDbcontex _db;
+        private readonly ApplicationDbContext _db;
         //constructor to initialize the ExpenseRepo and database context
-        public ExpenseServices(MyDbcontex db)
+        //variable Expense
+       
+        
+        public ExpenseServices(ApplicationDbContext db)
         {
             _db = db;
             _expenseRepo = new ExpenseRepo(_db);
@@ -25,19 +28,19 @@ namespace myproject1.Data
             return await _expenseRepo.GetAllExpensesAsync();
         }
         //method to get specific expense by id
-        public Expense GetExpenseById(string id)
+        public Expense GetExpenseById(int id)
         {
             return _expenseRepo.GetExpenseById(id);
         }
         //asynchronous method to get specific expense by id
-        public async Task<Expense> GetExpenseByIdAsync(string id)
+        public async Task<Expense> GetExpenseByIdAsync(int id)
         {
             return await Task.Run(() => _expenseRepo.GetExpenseById(id));
         }
         //method to add new expense
-        public Expense addExpense(Expense expense)
+        public Expense addExpense(Expense ExpenseDto)
         {
-            return _expenseRepo.addExpense(expense);
+            return _expenseRepo.addExpense(ExpenseDto);
         }
         //asynchronous method to add new expense
         public async Task<Expense> addExpenseAsync(Expense expense)
@@ -55,12 +58,12 @@ namespace myproject1.Data
             return await _expenseRepo.updateExpenseAsync(expenseWithChanges);
         }
         //method to delete expense by id
-        public Expense deleteExpense(string id)
+        public Expense deleteExpense(int id)
         {
             return _expenseRepo.deleteExpense(id);
         }
         //async method
-        public  async Task<Expense> deleteExpenseAsync(string id)
+        public  async Task<Expense> deleteExpenseAsync(int id)
         {
             return await _expenseRepo.deleteExpenseAsync(id);
         }

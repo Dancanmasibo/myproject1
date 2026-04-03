@@ -12,7 +12,7 @@ using myproject1.Data;
 namespace myproject1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260319152842_InitialCreate")]
+    [Migration("20260319160109_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -231,12 +231,9 @@ namespace myproject1.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ExpenseId")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("int");
-
                     b.Property<decimal>("amount")
-                        .HasColumnType("double(10)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("category")
                         .IsRequired()

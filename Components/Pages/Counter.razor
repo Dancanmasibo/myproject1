@@ -20,10 +20,14 @@
         <td>Action</td>
     </tr>
 </thead> *@
-        <a href="/add-expense" class="btn btn-primary mt-4">Add Expense</a>
+<a href="/add-expense" class="btn btn-primary mt-4">Add Expense</a>
+<div class="col">
+</div>
+<div><p></p></div>
 @if (expenseList == null)
 {
     <p><em>Loading...</em></p>
+    <div class="spinner"></div>
 }
 else
 {
@@ -32,35 +36,38 @@ else
         <div class="row">
             <div class="col align-content-md-around col-md-12 card">
 
-            <table class="table table-striped border table-responsive-sm">
-                <thead class="table-secondary">
-                    <tr>
-                        <th>Id</th>
-                        <th>Date</th>
-                        <th>Category</th>
-                        <th>Description</th>
-                        <th>Amount</th>
-                        <th><!..buttons column heading..></!..buttons></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (Expense expense in expenseList)
-                    {
+                <table class="table table-striped border table-responsive-sm">
+                    <thead class="table-secondary">
                         <tr>
-                            <td>@expense.ExpenseId</td>
-                            <td>@expense.date.ToShortDateString</td>
-                            <td>@expense.category</td>
-                            <td>@expense.description</td>
-                            <td>@expense.amount</td>
-                            <td>
-                                <button onclick="" class="btn btn-success btn-sm mb-1">Edit</button>
-                                <button onclick="" class="btn btn-btn-dangern-sm mb-1">Delete</button>
-                            </td>
+                            <th>Id</th>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Amount(Ksh)</th>
+                            <th>Modify</th>
                         </tr>
-                    }
-                </tbody>
+                    </thead>
+                    <tbody>
+                        @foreach (Expense expense in expenseList)
+                        {
+                            int id = expense.Id;
+                            <tr>
+                                <td>@expense.Id</td>
+                                <td>@expense.date.ToShortDateString()</td>
+                                <td>@expense.category</td>
+                                <td>@expense.description</td>
+                                <td>@expense.amount</td>
+                                <td>
+                                    <a class="btn btn-warning" href="/editExpense/@expense.Id">Edit</a>
 
-            </table>
+                                    <button @onclick="(() => dropExpensesAsync(id))" class="btn btn-danger btn-sm mb-1 "> <i class="bi bi-trash"></i>Delete</button>
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
             </div>
         </div>
     }
@@ -69,25 +76,124 @@ else
         <p>no expenses Available</p>
     }
 }
+@* <Delete_Dialog ShowDeleteDialog="showConfigDialog" oncancel="cancelConfigDialog">  </Delete_Dialog> *@
 
 @code {
+    private bool showConfigDialog;
+
     //list to store variables
     public Expense expense { get; set; }
-    public IEnumerable<Expense> expenseList { get; set; }
+    public List<Expense> expenseList { get; set; }
 
     //method to get all expenses
     public async Task loadExpensesAsync()
     {
-        expenseList = await expenseService.GetAllExpensesAsync();
+        expenseList = (List<Expense>)await expenseService.GetAllExpensesAsync();
     }
 
     //overriding task async
     protected override async Task OnInitializedAsync()
     {
         await loadExpensesAsync();
-        expenseList = await expenseService.GetAllExpensesAsync();
-        
+    }
+
+    private void openConfigDialog()
+    {
+        showConfigDialog = true;
+    }
+    private void cancelConfigDialog()
+    {
+        showConfigDialog = false;
+    }
+    public async Task dropExpensesAsync(int Id)
+    {
+        var deleteditem = await expenseService.deleteExpenseAsync(Id);
+
+        if (deleteditem is not null && deleteditem.Id != 0)
+        {
+            expenseList.Remove(deleteditem);
+        }
     }
 
 }
+<style>
+    .root {
+    }
 
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    :root {
+        --bg: #0b0f1a;
+        --surface: #131929;
+        --surface2: #1a2236;
+        --border: #1f2e47;
+        --accent: #00d4ff;
+        --accent2: #7c5cfc;
+        --green: #00e5a0;
+        --red: #ff4d6d;
+        --yellow: #ffd166;
+        --text: #e8eaf0;
+        --muted: #5a6a85;
+        --card: #161f33;
+    }
+
+    .table td {
+        color: white; /* makes all table cell text white */
+    }
+
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    .dashboard-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .card {
+        background-color: black;
+        border-radius: 8px;
+        padding: 20px;
+        flex: 1 1 250px; /* flexible width with minimum size */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        justify-content: center;
+        align-items: center;
+        border: 2px solid #800080;
+        text-align: center;
+    }
+
+    .value {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+
+
+
+    .chart-container {
+        background-color: black;
+        border-radius: 8px;
+        padding: 20px;
+        width: 100%;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        border: 2px solid #800080;
+        text-align: center;
+    }
+</style>

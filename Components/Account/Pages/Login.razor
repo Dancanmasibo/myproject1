@@ -17,10 +17,16 @@
     <div class="col-md-4">
         <section>
             <StatusMessage Message="@errorMessage" />
+        
             <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
                 <DataAnnotationsValidator />
                 <h2>Use a local account to log in.</h2>
                 <hr />
+                <div class="role-tabs">
+                    <button class="role-tab active" onclick="setRole('individual')">Individual</button>
+                    <button class="role-tab" onclick="setRole('business')">Business</button>
+                    <button class="role-tab" onclick="setRole('admin')">Admin</button>
+                </div>
                 <ValidationSummary class="text-danger" role="alert" />
                 <div class="form-floating mb-3">
                     <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />

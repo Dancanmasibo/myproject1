@@ -56,10 +56,9 @@ namespace myproject1.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExpenseId = table.Column<int>(type: "int", nullable: false),
                     category = table.Column<string>(type: "nvarchar(20)", nullable: false),
                     description = table.Column<string>(type: "nvarchar(100)", nullable: false),
-                    amount = table.Column<decimal>(type: "double(10)", nullable: false),
+                    amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>

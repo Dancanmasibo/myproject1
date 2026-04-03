@@ -1,0 +1,214 @@
+﻿@page "/Reports"
+@using System.Timers
+@using myproject1.Data
+@using myproject1.Respositories
+@using myproject1.Components.Pages
+@using myproject1.Components.Layout
+@inject ExpenseServices expenseService
+@inject NavigationManager NavigationManage
+@inject IJSRuntime JS
+
+
+<PageTitle>Reports</PageTitle>
+
+<h3>Download Report Dashboard</h3>
+
+<div class="dashboard-container">
+    <div class="card">
+        <h4>MONTHLY EXPENSE REPORT</h4>
+        <div class="report-icon">📆</div>
+        <p>This is Your full breakdown of your monthly spending </p>
+        <button class="btn-download" @onclick="OpenMonthlyPreview">⬇ Preview & Download PDF</button>
+
+    </div>
+
+    <div class="card">
+        <h4>YEARLY REPORT</h4>
+        <div class="report-icon">🗓️</div>
+        <p>This is your Annual financial summary breakdown</p>
+        <button class="btn-download" @onclick="OpenYearlyPreview">⬇ Preview & Download PDF</button>
+    </div>
+
+    <div class="card">
+        <h4>DAILY REPORT</h4>
+        <div class="report-icon">📅</div>
+        <p>Today's expenditure summary with all transactions</p>
+       <button class="btn-download" @onclick="OpenDailyPreview">⬇ Preview & Download PDF</button>
+    </div>
+    @if (selectedPreview == "Monthly")
+{
+    <div class="preview-card">
+    <div class="card-header">
+        <button>Download</button>
+    </div>
+    <MonthlyReportView/>
+    </div>
+}
+@if (selectedPreview == "Yearly")
+{
+    <div class="preview-card">
+        <div class="card-header">
+        <button>Download</button>
+    </div>
+        <YearlyVReportView />
+    </div>
+}
+@if (selectedPreview == "Daily")
+{
+    <div class="preview-card">
+        <div class="card-header">
+        <button>Download</button>
+    </div>
+        <DailyReportView />
+    </div>
+}
+</div>
+
+<div class="report-container">
+    <h4 alighn="center">RECENTS DOWNLOADS</h4
+    <canvas id="downloadcannvas" width="600" height="400"></canvas>
+</div>
+
+@code {
+    private List<Expense> dailyExpenses;
+    private DateTime selectedDate = DateTime.Today;
+    private string selectedPreview = string.Empty;
+    private void OpenMonthlyPreview()
+    {
+        selectedPreview = "Monthly";
+    }
+    private void OpenYearlyPreview()
+    {
+        selectedPreview ="Yearly";  
+    }
+    private void OpenDailyPreview()
+    {
+        selectedPreview = "Daily";
+    }
+      
+}
+<style>
+    .root {
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    :root {
+        --bg: #0b0f1a;
+        --surface: #131929;
+        --surface2: #1a2236;
+        --border: #1f2e47;
+        --accent: #00d4ff;
+        --accent2: #7c5cfc;
+        --green: #00e5a0;
+        --red: #ff4d6d;
+        --yellow: #ffd166;
+        --text: #e8eaf0;
+        --muted: #5a6a85;
+        --card: #161f33;
+    }
+
+    .table td {
+        color: white; /* makes all table cell text white */
+    }
+
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    .dashboard-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .card {
+        background-color: black;
+        border-radius: 8px;
+        padding: 20px;
+        flex: 1 1 250px; /* flexible width with minimum size */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        justify-content: center;
+        align-items: center;
+        border: 2px solid #800080;
+        text-align: center;
+    }
+
+    .value {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+
+
+
+    .chart-container {
+        background-color: black;
+        border-radius: 8px;
+        padding: 20px;
+        width: 100%;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        border: 2px solid #800080;
+        text-align: center;
+    }
+   .preview-card {
+    position: relative;
+    width: 100%;
+    max-height: 400px;   /* example scrollable height */
+    overflow-y: auto;    /* enables scrolling */
+    border: 2px solid #800080;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-header {
+    display: flex;
+    justify-content: flex-end; /* pushes button to the right */
+    align-items: center;
+    background: #0b0f1a;
+    padding: 0.5rem 1rem;
+    position: sticky;
+    top: 0;     
+    margin-right: 0; 
+    border: none;
+    top: 0;                 /* sticks to top of card */
+    z-index: 10;
+    margin: 0;     
+}
+.card-header button {
+    margin-top: 14px;
+    padding: 9px 20px;
+    background: rgba(0,212,255,.1);
+    border: 1px solid rgba(0,212,255,.2);
+    border-radius: 8px;
+    color: var(--accent);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .2s;
+    font-weight: 500;
+}
+
+    .card-header button:hover{
+        background: rgba(0,212,255,.2);
+    }
+
+}
+
+</style>

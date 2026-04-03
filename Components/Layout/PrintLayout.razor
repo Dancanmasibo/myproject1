@@ -1,0 +1,45 @@
+﻿@inherits LayoutComponentBase
+<div class="print-layout">
+    @Body
+</div>
+
+<style>
+    .print-layout {
+        margin: 0;
+        padding: 0;
+    }
+
+    card {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    @@media print {
+        .chart-container
+
+    {
+        page-break-inside: avoid; /* Legacy support */
+        break-inside: avoid; /* Modern browsers */
+        display: block; /* Ensure block-level for break rules */
+        margin-bottom: 20px; /* Add spacing between cards */
+    }
+
+    /* Optional: force each card to start on a new page */
+    .chart-container {
+        page-break-before: auto;
+        page-break-after: auto;
+    }
+
+    /* Table adjustments for print clarity */
+    .table {
+        page-break-inside: auto; /* Allow table to split row by row */
+    }
+
+        .table thead {
+            display: table-header-group; /* Repeat headers on each page */
+        }
+
+        .table tbody {
+            display: table-row-group;
+        }
+
+</style>

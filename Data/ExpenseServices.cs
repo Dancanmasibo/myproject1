@@ -10,8 +10,8 @@ namespace myproject1.Data
         private readonly ApplicationDbContext _db;
         //constructor to initialize the ExpenseRepo and database context
         //variable Expense
-       
-        
+
+
         public ExpenseServices(ApplicationDbContext db)
         {
             _db = db;
@@ -63,10 +63,12 @@ namespace myproject1.Data
             return _expenseRepo.deleteExpense(id);
         }
         //async method
-        public  async Task<Expense> deleteExpenseAsync(int id)
+        public async Task<Expense> deleteExpenseAsync(int id)
         {
             return await _expenseRepo.deleteExpenseAsync(id);
         }
+
+
 
     }
 }

@@ -30,7 +30,7 @@ namespace myproject1.Respositories
         //ExpenseId parameter to get specific expense
         public Expense GetExpenseById(int id)
         {
-            Expense expense = _db.Expenses.FirstOrDefault<Expense>(e => e.ExpenseId == id);
+            Expense expense = _db.Expenses.FirstOrDefault<Expense>(e => e.Id == id);
             //check if expense is null
             if (expense == null)
             {
@@ -48,24 +48,19 @@ namespace myproject1.Respositories
         //async method to insert data to the database
         public async Task<Expense> addExpenseAsync(Expense expense)
         {
-            try
-            {
-                _db.Expenses.Add(expense);
-                await _db.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
+            _db.Expenses.Add(expense);
+            await _db.SaveChangesAsync();
 
-            }
+
             return expense;
         }
         //to update data from the database
         public Expense updateExpense(Expense expenseWithChanges)
         {
-            Expense expense = _db.Expenses.FirstOrDefault<Expense>(e => e.ExpenseId == expenseWithChanges.ExpenseId);
+            Expense expense = _db.Expenses.FirstOrDefault<Expense>(e => e.Id == expenseWithChanges.Id);
             if (expense == null)
             {
-                throw new Exception($"Expense with id {expenseWithChanges.ExpenseId} not found.");
+                throw new Exception($"Expense with id {expenseWithChanges.Id} not found.");
             }
             else
             {
@@ -77,10 +72,10 @@ namespace myproject1.Respositories
         //async method to update data from the database
         public async Task<Expense> updateExpenseAsync(Expense expenseWithChanges)
         {
-            Expense expense = await _db.Expenses.FirstOrDefaultAsync<Expense>(e => e.ExpenseId == expenseWithChanges.ExpenseId);
+            Expense expense = await _db.Expenses.FirstOrDefaultAsync<Expense>(e => e.Id == expenseWithChanges.Id);
             if (expense == null)
             {
-                throw new Exception($"Expense with id {expenseWithChanges.ExpenseId} not found.");
+                throw new Exception($"Expense with id {expenseWithChanges.Id} not found.");
             }
             else
             {
@@ -92,7 +87,7 @@ namespace myproject1.Respositories
         //to delete data from the database
         public Expense deleteExpense(int id)
         {
-            Expense expense = _db.Expenses.FirstOrDefault<Expense>(e => e.ExpenseId == id);
+            Expense expense = _db.Expenses.FirstOrDefault<Expense>(e => e.Id == id);
             if (expense == null)
             {
                 throw new Exception($"Expense with id {id} not found.");
@@ -107,17 +102,25 @@ namespace myproject1.Respositories
         //async method to delete data from the database
         public async Task<Expense> deleteExpenseAsync(int id)
         {
-            Expense expense = await _db.Expenses.FirstOrDefaultAsync<Expense>(e => e.ExpenseId == id);
-            if (expense == null)
+            try
             {
-                throw new Exception($"Expense with id {id} not found.");
+                Expense expense = await _db.Expenses.FirstOrDefaultAsync<Expense>(e => e.Id == id);
+                if (expense == null)
+                {
+                    throw new Exception($"Expense with id {id} not found.");
+                }
+                else
+                {
+                    _db.Expenses.Remove(expense);
+                    await _db.SaveChangesAsync();
+                }
+                return expense;
             }
-            else
+            catch (Exception e)
             {
-                _db.Expenses.Remove(expense);
-                await _db.SaveChangesAsync();
+
+                throw;
             }
-            return expense;
         }
     }
 }

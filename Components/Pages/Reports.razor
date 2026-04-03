@@ -7,8 +7,6 @@
 @inject ExpenseServices expenseService
 @inject NavigationManager NavigationManage
 @inject IJSRuntime JS
-
-
 <PageTitle>Reports</PageTitle>
 
 <h3>Download Report Dashboard</h3>
@@ -33,36 +31,41 @@
         <h4>DAILY REPORT</h4>
         <div class="report-icon">📅</div>
         <p>Today's expenditure summary with all transactions</p>
-       <button class="btn-download" @onclick="OpenDailyPreview">⬇ Preview & Download PDF</button>
+        <button class="btn-download" @onclick="OpenDailyPreview">⬇ Preview & Download PDF</button>
     </div>
     @if (selectedPreview == "Monthly")
-{
-    <div class="preview-card">
-    <div class="card-header">
-        <button>Download</button>
-        <button>print</button>
-    </div>
-    <MonthlyReportView/>
-    </div>
-}
-@if (selectedPreview == "Yearly")
-{
-    <div class="preview-card">
-        <div class="card-header">
-        <button>Download</button>
-    </div>
-        <YearlyVReportView />
-    </div>
-}
-@if (selectedPreview == "Daily")
-{
-    <div class="preview-card">
-        <div class="card-header">
-        <button>Download</button>
-    </div>
-        <DailyReportView />
-    </div>
-}
+    {
+        <div class="preview-card">
+            <div class="card-header">
+                <button>Download</button>
+                <button>print</button>
+            </div>
+            <MonthlyReportView />
+        </div>
+    }
+    @if (selectedPreview == "Yearly")
+    {
+        <div class="preview-card">
+            <div class="card-header">
+                <button>Download</button>
+            </div>
+            <YearlyVReportView />
+        </div>
+    }
+    @if (selectedPreview == "Daily")
+    {
+        <div class="preview-card">
+            <div class="card-header">
+                <button @onclick="DownloadDailyReportPdf">
+                    ⬇ Download PDF
+                </button>
+            </div>
+            <DailyReportView />
+        </div>
+        <div id="dailyReportSection">
+            <DailyReportView />
+        </div>
+    }
 </div>
 
 <p>
@@ -73,19 +76,47 @@
     private List<Expense> dailyExpenses;
     private DateTime selectedDate = DateTime.Today;
     private string selectedPreview = string.Empty;
+    private int downloadCounter = 0;
     private void OpenMonthlyPreview()
     {
         selectedPreview = "Monthly";
     }
     private void OpenYearlyPreview()
     {
-        selectedPreview ="Yearly";  
+        selectedPreview = "Yearly";
     }
     private void OpenDailyPreview()
     {
         selectedPreview = "Daily";
     }
-      
+    private async Task DownloadDailyReportPdf()
+    {
+        selectedPreview = "Daily";
+        downloadCounter++;
+        string filename = $"Daily_Report_{downloadCounter}.pdf";
+
+        // Tell JS which element to capture
+        await JS.InvokeVoidAsync("downloadPageAsPdf", "dailyReportSection", filename);
+    }
+    // private async Task DownloadDailyReportPdf()
+    // {
+    //     downloadCounter++;
+    //     string filename = $"Daily_Report_{downloadCounter}.pdf";
+    //     await JS.InvokeVoidAsync("downloadPageAsPdf", "Daily_Report.pdf");
+    // }
+    // private async Task DownloadMonthlyReportPdf()
+    // {
+    //     downloadCounter++;
+    //     string filename = $"Monthly_Report_{downloadCounter}.pdf";
+    //     await JS.InvokeVoidAsync("downloadPageAsPdf", filename);
+    // }
+
+    // private async Task DownloadYearlyReportPdf()
+    // {
+    //     downloadCounter++;
+    //     string filename = $"Yearly_Report_{downloadCounter}.pdf";
+    //     await JS.InvokeVoidAsync("downloadPageAsPdf", filename);
+    // }
 }
 <style>
     .root {
@@ -167,48 +198,51 @@
         border: 2px solid #800080;
         text-align: center;
     }
-   .preview-card {
-    position: relative;
-    width: 100%;
-    max-height: 400px;   /* example scrollable height */
-    overflow-y: auto;    /* enables scrolling */
-    border: 2px solid #800080;
-    display: flex;
-    flex-direction: column;
-}
 
-.card-header {
-    display: flex;
-    justify-content: flex-end; /* pushes button to the right */
-    align-items: center;
-    background: #0b0f1a;
-    padding: 0.5rem 1rem;
-    position: sticky;
-    top: 0;     
-    margin-right: 0; 
-    border: none;
-    top: 0;                 /* sticks to top of card */
-    z-index: 10;
-    margin: 0;     
-}
-.card-header button {
-    margin-top: 14px;
-    padding: 9px 20px;
-    background: rgba(0,212,255,.1);
-    border: 1px solid rgba(0,212,255,.2);
-    border-radius: 8px;
-    color: var(--accent);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all .2s;
-    font-weight: 500;
-}
-
-    .card-header button:hover{
-        background: rgba(0,212,255,.2);
+    .preview-card {
+        position: relative;
+        width: 100%;
+        max-height: 400px; /* example scrollable height */
+        overflow-y: auto; /* enables scrolling */
+        border: 2px solid #800080;
+        display: flex;
+        flex-direction: column;
+        border-radius: 8px;
     }
 
-}
 
+    .card-header {
+        display: flex;
+        justify-content: flex-end; /* pushes button to the right */
+        align-items: center;
+        background: #0b0f1a;
+        padding: 0.5rem 1rem;
+        position: sticky;
+        top: 0;
+        margin-right: 0;
+        border: none;
+        top: 0; /* sticks to top of card */
+        z-index: 10;
+        margin: 0;
+    }
+
+        .card-header button {
+            margin-top: 14px;
+            padding: 9px 20px;
+            background: rgba(0,212,255,.1);
+            border: 1px solid rgba(0,212,255,.2);
+            border-radius: 8px;
+            color: var(--accent);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all .2s;
+            font-weight: 500;
+        }
+
+            .card-header button:hover {
+                background: rgba(0,212,255,.2);
+            }
+
+    }
 </style>

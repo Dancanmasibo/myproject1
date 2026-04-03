@@ -1,0 +1,164 @@
+﻿@page "/yearly-report/print"
+@using myproject1.Data
+@using myproject1.Respositories
+@inject ExpenseServices expenseService;
+@using myproject1.Components.Layout
+@layout PrintLayout
+@inject IJSRuntime JS
+@inject NavigationManager navigationManager
+<div id="page-expenses" class="page">
+    <div class="expense-tittle">
+        <h2>Yearly Expense Report</h2>
+    </div>
+</div>
+
+@if (yearlyExpenses == null)
+{
+    <p><em>Loading...</em></p>
+    <div class="spinner"></div>
+}
+else
+{
+    if (yearlyExpenses.Count > 0)
+    {
+        @foreach (var group in yearlyExpenses)
+        {
+            <div class="chart-container mt-4">
+                <h5> @group.Key Expenses</h5
+                <table class="table table-striped border table-responsive-sm">
+                    <thead class="table-secondary">
+                        <tr>
+                            <th>Id</th>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Amount (Ksh)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var expense in group)
+                        {
+                            <tr>
+                                <td>@expense.Id</td>
+                                <td>@expense.date.ToShortDateString()</td>
+                                <td>@expense.category</td>
+                                <td>@expense.description</td>
+                                <td>@expense.amount</td>
+                            </tr>
+                        }
+                        <!-- Total row at the bottom -->
+                        <tr>
+                            <td colspan="4" style="font-weight: bold; text-align: right; background-color: white; color: black;">
+                                Total
+                            </td>
+                            <td style="font-weight: bold; text-align: right; background-color: white; color: black;">
+                                @group.Sum(e => e.amount).ToString("N2")
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No expenses available</p>
+    }
+}
+@code {
+    public List<IGrouping<int, Expense>> yearlyExpenses { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var expenses = await expenseService.GetAllExpensesAsync();
+        yearlyExpenses = expenses
+            .GroupBy(e => e.date.Year)
+            .OrderByDescending(g => g.Key)
+            .ToList();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && yearlyExpenses != null)
+        {
+            // Small delay to ensure the DOM has fully rendered the table
+            await Task.Delay(500); 
+            await JS.InvokeVoidAsync("window.print");
+        }
+    }
+}
+<style>
+     :root {
+        --bg: #0b0f1a;
+        --surface: #131929;
+        --surface2: #1a2236;
+        --border: #1f2e47;
+        --accent: #00d4ff;
+        --accent2: #7c5cfc;
+        --green: #00e5a0;
+        --red: #ff4d6d;
+        --yellow: #ffd166;
+        --text: #e8eaf0;
+        --muted: #5a6a85;
+        --card: #161f33;
+    }
+
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+    .value {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .chart-container {
+        background-color: black;
+        border-radius: 8px;
+        padding: 20px;
+        width: 100%;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        border: 2px solid #800080;
+        text-align: center;
+    }
+
+    * Table header styling */
+    .table thead th {
+        background-color: black;
+        color: white;
+        font-weight: bold;
+        text-align: center;
+        border: 1px solid black;
+    }
+
+    /* Table body cells styling */
+    .table tbody td {
+        background-color: white;
+        color: black;
+        border: 1px solid black;
+    }
+    expenses-title {
+        text-align: center; /* Centers the text */
+        margin-bottom: 10px; /* Adds spacing before the line */
+        font-weight: bold; /* Optional: makes the title stand out */
+    }
+
+
+    .title-line {
+        border: none; /* Removes default styling */
+        border-top: 2px solid #333; /* Creates a custom horizontal line */
+        width: 60%; /* Line width relative to page */
+        margin: 0 auto; /* Centers the line */
+    }
+</style>

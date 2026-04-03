@@ -1,0 +1,46 @@
+﻿
+@page "/print-view"
+@using System.Timers
+@using myproject1.Data
+@using myproject1.Respositories
+@using myproject1.Components.Pages
+@using myproject1.Components.Layout
+@inject ExpenseServices expenseService
+@inject NavigationManager NavigationManage
+@layout DownloadLayout 
+@inject IJSRuntime JS
+
+
+
+@if (selectedPreview == "Monthly")
+{
+    <div id="DownloadArea">
+        <MonthlyReportView />
+    </div>
+    
+}
+@if (selectedPreview == "Yearly")
+{
+    <div id="DownloadArea">
+        <YearlyVReportView />
+    </div>
+}
+@if (selectedPreview == "Daily")
+{
+    <div id="DownloadArea">
+        <DailyReportView />
+    </div>
+
+}
+
+@code {
+    private string selectedPreview = string.Empty;
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+//delay until all data is loaded
+await Task.Delay(5000);
+            await JS.InvokeVoidAsync("window.print");
+            // Optional: await JS.InvokeVoidAsync("window.close");
+        }
+    }
+}

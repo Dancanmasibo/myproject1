@@ -1,0 +1,94 @@
+﻿@page "/editExpense/{id:int}"
+@using myproject1.Data
+@using myproject1.Respositories
+@inject ExpenseServices ExpenseServices
+@inject NavigationManager NavigationManager
+<PageTitle>EditExpanse</PageTitle>
+<h3>Edit Expense</h3>
+<div class="row mb-s">
+    <div class="col col-lg-10">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" @onsubmit="UpdateExpense">
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="date" @bind="ExpenseDtodata.date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <input type="text" class="form-control" id="category" @bind="ExpenseDtodata.category" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="description" @bind="ExpenseDtodata.description" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount</label>
+                        <input type="number" class="form-control" id="amount" @bind="ExpenseDtodata.amount" required>
+                    </div>
+                    <div class="col-md-4 d-flex justify-content-center gap-3 mt-3">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button class="btn btn-primary" @onclick="GoToCounter">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    public Expense ExpenseDtodata { get; set; } = new Expense();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ExpenseDtodata = await ExpenseServices.GetExpenseByIdAsync(id);
+    }
+
+    public async Task UpdateExpense()
+    {
+        await ExpenseServices.updateExpenseAsync(ExpenseDtodata);
+        NavigationManager.NavigateTo("/Counter");
+    }
+    private void GoToCounter()
+    {
+        NavigationManager.NavigateTo("/counter");
+    }
+}
+<style>
+    form {
+        border: 2px solid pink; /* pink border around the form */
+        border-radius: 8px;
+        padding: 20px;
+        background-color: black; /* matches your theme */
+        text-decoration-color: white;
+    }
+
+    .btn-primary {
+        background-color: #ff69b4; /* hot pink */
+        border-color: #ff69b4;
+    }
+
+        .btn-primary:hover {
+            background-color: #ff1493; /* deeper pink on hover */
+            border-color: #ff1493;
+        }
+
+    .btn-secondary {
+        background-color: transparent;
+        border: 2px solid #ff69b4;
+        color: #ff69b4;
+    }
+
+        .btn-secondary:hover {
+            background-color: #ff69b4;
+            color: white;
+        }
+
+    .form-label {
+        color: white;
+    }
+
+</style>

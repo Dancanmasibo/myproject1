@@ -1,0 +1,22 @@
+﻿* body{
+    position: absolute;
+    left: 0;
+    Right: 0;
+    bottom: 0;
+    top: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-colour: rgba(0,0,0,0,5);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 200rem;
+    padding: 2rem;
+    border-radius: 1rem;
+    background-color: white;
+    margin-top: 1.5rem;
+    position: fixed;
+}

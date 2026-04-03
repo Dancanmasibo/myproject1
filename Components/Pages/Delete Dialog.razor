@@ -1,0 +1,31 @@
+﻿@page "/delete"
+<h3>Delete_Dialog</h3>
+
+<div class="confirm-dialog-container">
+    <div class="confirm-dialog">
+        <h3>Are you sure you want to delete Expense?</h3>
+        <div class="d-flex flex-row justify-content-end mt-3">
+            <button @onclick="onCancel"
+                    class=" btn btn-secondary shadow-none">
+                Cancel
+            </button>
+            <button @onclick="onOk"
+                    class=" btn btn-danger shadow-none">
+                Ok
+            </button>
+        </div>
+
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public bool ShowDeleteDialog { get; set; }
+    [Parameter]
+    public EventCallback onCancel { get; set; }
+    [Parameter]
+    public EventCallback onOk { get; set; }
+
+
+}

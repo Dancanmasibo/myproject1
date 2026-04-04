@@ -6,6 +6,9 @@
 @layout PrintLayout
 @inject IJSRuntime JS
 
+<h2 class="expenses-title">
+    Expenses for @selectedDate.ToString("dddd, dd MMM yyyy")
+</h2>
 <hr class="title-line" />
 
 <div class="mb-3">
@@ -13,56 +16,53 @@
     <InputDate @bind-Value="selectedDate" class="form-control" />
     <button class="btn btn-primary mt-2" @onclick="PrintExpenseAsync">Generate Report</button>
 </div>
-<div id="dailyReportSection">
-    <h2 class="expenses-title">
-        Expenses for @selectedDate.ToString("dddd, dd MMM yyyy")
-    </h2>
-    @if (dailyExpenses == null)
-    {
-        <p><em>Loading...</em></p>
-        <div class="spinner"></div>
-    }
-    else if (dailyExpenses.Count > 0)
-    {
-        <div class="chart-container mt-4">
-            <table class="table table-striped border table-responsive-sm">
-                <thead class="table-secondary">
+
+@if (dailyExpenses == null)
+{
+    <p><em>Loading...</em></p>
+    <div class="spinner"></div>
+}
+else if (dailyExpenses.Count > 0)
+{
+    <div class="chart-container mt-4">
+        <table class="table table-striped border table-responsive-sm">
+            <thead class="table-secondary">
+                <tr>
+                    <th>Id</th>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Amount (Ksh)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var expense in dailyExpenses)
+                {
                     <tr>
-                        <th>Id</th>
-                        <th>Date</th>
-                        <th>Category</th>
-                        <th>Description</th>
-                        <th>Amount (Ksh)</th>
+                        <td>@expense.Id</td>
+                        <td>@expense.date.ToShortDateString()</td>
+                        <td>@expense.category</td>
+                        <td>@expense.description</td>
+                        <td>@expense.amount.ToString("N2")</td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (var expense in dailyExpenses)
-                    {
-                        <tr>
-                            <td>@expense.Id</td>
-                            <td>@expense.date.ToShortDateString()</td>
-                            <td>@expense.category</td>
-                            <td>@expense.description</td>
-                            <td>@expense.amount.ToString("N2")</td>
-                        </tr>
-                    }
-                    <tr>
-                        <td colspan="4" style="font-weight: bold; text-align: right; background-color: white; color: black;">
-                            Total
-                        </td>
-                        <td style="font-weight: bold; text-align: right; background-color: white; color: black;">
-                            @dailyExpenses.Sum(e => e.amount).ToString("N2")
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    }
-    else
-    {
-        <p>No expenses found for this day.</p>
-    }
-</div>
+                }
+                <tr>
+                    <td colspan="4" style="font-weight: bold; text-align: right; background-color: white; color: black;">
+                        Total
+                    </td>
+                    <td style="font-weight: bold; text-align: right; background-color: white; color: black;">
+                        @dailyExpenses.Sum(e => e.amount).ToString("N2")
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <p>No expenses found for this day.</p>
+}
+
 @code {
     private List<Expense> dailyExpenses;
     private DateTime selectedDate = DateTime.Today;
@@ -84,7 +84,7 @@
     {
         await Task.Delay(3000);
         await JS.InvokeVoidAsync("window.print");
-
+        
 
     }
 }
